@@ -1,0 +1,262 @@
+<!DOCTYPE html5>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8" />
+	<title>Ask me - Jerónimo Nuñez</title>
+	
+	<link rel="stylesheet" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" href="css/style.css" />
+	
+	<script type="text/javascript" src="js/modernizr.custom.29880.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+	<script defer type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/jquery.tmpl.min.js"></script>
+</head>
+<body>
+		<nav class="navbar">
+		  <div class="navbar-inner">
+		    <div class="container">
+		 
+		      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+		      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		      </a>
+		 
+		      <!-- Be sure to leave the brand out there if you want it shown -->
+		      <a class="brand" href="#">Project name</a>
+		 
+		      <!-- Everything you want hidden at 940px or less, place within here -->
+		      <div class="nav-collapse">
+		        <!-- .nav, .navbar-search, .navbar-form, etc -->
+		        <ul class="nav">
+		        	<li><a href="index.html">About</a></li>
+		        	<li><a href="media.html">Media</a></li>
+		        	<li class="active"><a href="askme.html">Ask me</a></li>
+		        	<li><a href="contact.html">Contact</a></li>
+		        </ul>
+		      </div>
+		 
+		    </div>
+		  </div>
+	</nav>	
+	<section class="container-fluid">
+		
+		<h1>Ask me</h1>
+		<p>Ask me something, please.</p>
+		
+		<div id="questions">
+			
+		</div>
+		
+		<section class="my-form">
+			<form class="form-horizontal" action="#" id="sendquestions">
+			  <fieldset>
+			    <legend>Ask me something</legend>
+			    
+			    <div class="control-group">
+			      <label class="control-label" for="name">Your name</label>
+			      <div class="controls">
+			        <input type="text" class="input-xlarge" id="name" name="name" />
+			      </div>
+			    </div>
+			    
+			    <div class="control-group">
+			      <label class="control-label" for="message">Your question</label>
+			      <div class="controls">
+			        <textarea class="input-xlarge" id="message" name="message"></textarea>
+			      </div>
+			    </div>
+			    
+			    <div class="form-actions">
+			    	<button class="btn btn-primary" type="submit">Ask!</button>
+			    </div>
+			    
+			  </fieldset>
+			</form>
+		</section>
+		
+	</section>
+	
+	<script id="questionTemplate" type="text/x-jquery-tmpl">
+		<article class="well" id="${Id}">
+				
+			<header>
+				<h2>${Question}</h2>
+				<h4>Asked by <i class="icon-user"></i> ${User} on <i class="icon-time"></i> <time datetime="${Time}">${Time}</time></h4>
+			</header>
+				
+			<p><button class="btn active-answer"><i class="icon-fire"></i>Answer!</button></p>
+			
+			<form class="form-inline">
+			  <textarea placeholder="Type please"></textarea>
+			  <button type="submit" class="btn"><i class="icon-comment"></i> Post it!</button>
+			</form>
+			
+			<p>${Something}</p>
+			
+		</article>
+	</script>
+	
+	<script id="answerTemplate" type="text/x-jquery-tmpl">
+		<div class="well">
+			<header>
+				<h4>${Content}</h4>
+			</header>
+			<p>Aswered by <i class="icon-user"></i> ${User} on <i class="icon-time"></i> <time datetime="${Time}">${Time}</time></p>
+		</div>
+	</script>
+	
+	<script type="text/javascript">
+	
+		var jsObject, questionList,
+			template = $( "#questionTemplate" ).template();
+	
+		if (Modernizr.localstorage) {
+		  	// window.localStorage is available!
+		  	askControl();
+		} else {
+			$('#questions').append('window.localstorage is not available! Please update your browser.');
+		}
+		
+		function askControl() {
+			// Welcome to askcontrol
+			console.log("Welcome to askcontrol 1.0");
+			var object = {
+				Question: "hellloooooo",
+				User: "Jero",
+				Time: "Sarasa"
+				},
+			
+			/*q = {
+				qa: [
+					{
+						Question: "Pregunta 1",
+						User: "Jero",
+						Time: "11:18"
+					},
+					{
+						Question: "Pregunta 2",
+						User: "Jero",
+						Time: "11:18"
+					}
+				]
+			}*/
+			
+				element = {},
+				
+				i = 0,
+				
+				jsonString = window.localStorage.getItem('askmeq');
+				
+			if(!jsonString) {
+				
+				var q = {
+					qa: []
+				}
+				
+				jsonString = JSON.stringify(q);
+				
+				console.log(jsonString);
+			
+				window.localStorage.setItem('askmeq',jsonString)	
+				 
+				return false; 
+			}
+				
+			jsObject = JSON.parse(jsonString);
+			
+			questionList = jsObject.qa;
+			
+			for(i = 0; i<questionList.length; i++) {
+				console.log(questionList[i]);
+				element = jQuery.tmpl(template, questionList[i]).appendTo('#questions')
+			}
+			
+		}
+		
+		
+		// form action
+		$('form#sendquestions').submit( function(e){
+			e.preventDefault();
+			if( $('#message').val() == '' ) {
+				return false;
+			}
+			
+			var username = $('#name').val() == '' ? 'Anonimo' : $('#name').val(),
+				now = currentTime(),
+				obj = {
+					Id: "ans" + jsObject.qa.length,
+					Question: $('#message').val(),
+					User: username,
+					Time: now.hours + ':' + now.minutes + ' el ' + now.day + '/' + now.month + '/' + now.year,
+					Answers: []
+				},
+				jsonString,
+				element;
+			
+			// pushing the object to the array
+			jsObject.qa.push(obj);
+			
+			jsonString = JSON.stringify(jsObject);
+			
+			window.localStorage.setItem('askmeq',jsonString)
+			
+			element = jQuery.tmpl(template, obj).appendTo('#questions');
+			
+			bindingMachine();
+		});
+		
+		
+		function bindingMachine () {
+			$('.active-answer').on('click', function() {
+				$(this).hide();
+				$(this).parent().parent().find('form').fadeIn();
+			});
+			
+			$('form.form-inline').on('submit', function() {
+				console.log('Sending answer ...');
+				var id = $(this).parents('article').attr('id');
+				console.log('Question: ' + id );
+				console.log(jsObject);
+				
+				id = id.substring(3);
+				console.log( id.substring(3) );
+				
+				console.log(jsObject.qa[id].Answers);
+				
+				console.log( jsObject.qa[id] );
+				
+				return false;
+			});
+		}
+		
+		function currentTime() {
+			var currentTime = new Date(),
+				hours = currentTime.getHours(),
+				minutes = currentTime.getMinutes(),
+				month = currentTime.getMonth() + 1,
+				day = currentTime.getDate(),
+				year = currentTime.getFullYear();
+				
+			if (minutes < 10){
+				minutes = "0" + minutes
+			}
+			
+			var	r = {
+					'hours'		: hours,
+					'minutes'	: minutes,
+					'month'		: month,
+					'day'		: day,
+					'year'		: year
+				};
+			
+			return r;
+		}
+		
+		bindingMachine();
+		
+	</script>
+</body>
+</html>

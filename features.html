@@ -1,0 +1,165 @@
+<!DOCTYPE HTML>
+<!--  -->
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>HTML5 : Some Features and Feature Detection</title>
+	<link rel="stylesheet" href="css/bootstrap.css">
+	<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+	<link href="prettify/prettify.css" type="text/css" rel="stylesheet" />
+	<script type="text/javascript" src="prettify/prettify.js"></script>
+	
+</head>
+<body onload="prettyPrint()">
+	
+	
+<section class="container-fluid" style="padding-top:40px">
+		
+		<h1>HTML5 : Web Storage, (jQuery) Templates, Geolocalization, Feature Detection</h1>
+		<h2>WebStorage</h2>
+		<div class="well">
+
+		<p class="alert alert-info">
+			Ref: <a href="http://diveintohtml5.info/storage.html">The Past, Present &amp; Future of Local Storage for Web Applications</a>  / <a href="dev.w3.org/html5/webstorage/">HTML5 WebStorage Spec</a>
+		</p>
+		
+		<p>HTML5 Offer to us to 2 ways of storage data on the browser</p>
+
+		<ol>
+			<li>SessionStorage: Saves data (pair key-value) util the user closes the tab/window</li>
+			<li>LocalStorage: Saves data (idem above) forever ( or util the user erase it manually :P)</li>
+		</ol>
+
+		<p>So both works as a cookie but a difference between their lifetime, and both implements the same API</p>
+
+		<h3>API</h3>
+
+		<ul>
+			<li>window.localStorage.<STRONG>setItem('key','value')</STRONG></li>
+			<li>window.localStorage.<STRONG>getItem('key')</STRONG></li>
+			<li>window.localStorage.<STRONG>removeItem('key')</STRONG></li>
+			<li>window.localStorage.<STRONG>clear()</STRONG></li>
+		</ul>
+
+		<p class="alert">The same applies for window.sessionStorage</p>
+
+		</div>
+		
+		<h2>(jQuery) Templates + JSON</h2>
+<div class="well">
+	
+		<p>This is not an HTML5 Features, but it comes pretty useful to render elements stored in the browser, and we'll be using in this training</p>
+		<h3>What are the Templates? </h3>
+<p>Is the technique that allows the clientSide to be the one rendering the views of a component  instead of generated full html on the server side.</p>
+<h3>How to use them?</h3>
+
+<pre><code class="prettyprint">var object = {
+url: &quot;http://example.com&quot;,
+getName: function(){ return &quot;Trevor&quot;; }
+};
+var template = '&lt;li&gt;&lt;a href=&quot;${url}&quot;&gt;${getName()}&lt;/a&gt;&lt;/li&gt;';
+var element = jQuery.tmpl(template, object);
+// Produces: &lt;li&gt;&lt;a href=&quot;http://example.com&quot;&gt;Trevor&lt;/a&gt;&lt;/li&gt;
+$(&quot;body&quot;).append(element);	
+</code></pre>
+
+		<h3>Template Storage</h3>
+		<p>When it comes to storing view templates, there are a few options:</p>
+		<ul>
+			<li>
+			Inline in the JavaScript	
+			</li>
+			<li>Inline in a custom script tag</li>
+			<li>Loaded remotely</li>
+			<li>Inline in the HTML</li>
+		</ul>
+		<p class="alert alert-info">Reference: <a href="https://github.com/jquery/jquery-tmpl">jQuery Template Github</a> and O'Reilly - JavaScript Web Applications by Alex MacCaw</p>
+
+		<h3>JSON</h3>
+
+		<p>Some browsers bring us the JSON object as Native, otherwise we can simulate it with Javascript whatever including a new library or using from a framework like jquery.</p>
+
+		<p>Let's check easy examples over here: <a href="https://developer.mozilla.org/En/Using_native_JSON">Json Native</a></p>
+</div>
+
+
+<h2>GeoLocalization</h2>
+
+<div class="well">
+	<p>The geolocation API lets you share your location with trusted web sites. The latitude and longitude are available to JavaScript on the page, which in turn can send it back to the remote web server and do fancy location</p>
+
+<p class="alert alert-info">
+	Reference: <a href="http://diveintohtml5.info/geolocation.html">
+You Are Here
+(And So Is Everybody Else)</a>
+
+</p>
+
+<div class="example alert alert-error" id="example">
+	
+</div>
+
+<pre ><code class="prettyprint">navigator.geolocation.getCurrentPosition(show_map);
+function show_map(position) {
+  var latitude = position.coords.latitude;
+  var longitude = position.coords.longitude;
+  // let's show a map or do something interesting!
+  $('#example').html('longitude: '+longitude+ ' /  latitude: '+latitude)
+}
+</code></pre>
+
+</div>
+<script type="text/javascript">
+navigator.geolocation.getCurrentPosition(show_map);
+function show_map(position) {
+  var latitude = position.coords.latitude;
+  var longitude = position.coords.longitude;
+  // let's show a map or do something interesting!
+  $('#example').html('longitude: '+longitude+ ' /  latitude: '+latitude)
+}
+</script>
+
+<h2>Feature Detection</h2>
+<p class="alert alert-info">Reference: Addison Wesley - Test Driven JavaScript Development</p>
+<pre><code class="prettyprint">
+function addEventHandler(element, type, listener) {
+	// Bad example, don't try this at home
+	if (/MSIE/.test(navigator.userAgent)) {
+	element.attachEvent("on" + type, function () {
+	// Pass event as argument to the listener and
+	// correct it's this value. IE calls the listener
+	// with the global object as this.
+	return listener.call(element, window.event);
+	});
+	} else {
+	element.addEventListener(type, listener, false);
+	}
+}	
+</code></pre>
+<pre><code class="prettyprint">function addEventHandler(element, type, listener) {
+// Bad example, don't try this at home
+	if (window.ActiveXObject) {
+	element.attachEvent("on" + type, function () {
+		return listener.call(element, window.event);
+		});
+	} else {
+	element.addEventListener(type, listener, false);
+	}
+}</code></pre>
+<pre><code class="prettyprint">
+function get_location() {
+  if (Modernizr.geolocation) {
+    navigator.geolocation.getCurrentPosition(show_map);
+  } else {
+    // no native support; maybe try Gears?
+  }
+}
+</code></pre>
+</section>
+
+	
+
+
+
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html5>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8" />
+	<title>HTML5 Media - Jerónimo Nuñez</title>
+	
+	<link rel="stylesheet" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" href="css/style.css" />
+	
+	<script type="text/javascript" src="js/modernizr.custom.29880.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+	<script defer type="text/javascript" src="js/bootstrap.min.js"></script>
+	
+</head>
+<body>
+		<nav class="navbar">
+		  <div class="navbar-inner">
+		    <div class="container">
+		 
+		      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+		      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		      </a>
+		 
+		      <!-- Be sure to leave the brand out there if you want it shown -->
+		      <a class="brand" href="#">Project name</a>
+		 
+		      <!-- Everything you want hidden at 940px or less, place within here -->
+		      <div class="nav-collapse">
+		        <!-- .nav, .navbar-search, .navbar-form, etc -->
+		        <ul class="nav">
+		        	<li><a href="index.html">About</a></li>
+		        	<li class="active"><a href="media.html">Media</a></li>
+		        	<li><a href="askme.html">Ask me</a></li>
+		        	<li><a href="contact.html">Contact</a></li>
+		        </ul>
+		      </div>
+		 
+		    </div>
+		  </div>
+	</nav>	
+	<section class="container-fluid">
+		
+		<h1>HTML 5 Video</h1>
+		<p>Tag video</p>
+		
+		<div class="span9">
+		
+		<section id="videos">
+			<div class="well">
+				
+				  <video id="video_1" preload width="640" height="264" poster="http://video-js.zencoder.com/oceans-clip.png">
+				    <source src="http://video-js.zencoder.com/oceans-clip.mp4" type='video/mp4' />
+				    <source src="http://video-js.zencoder.com/oceans-clip.webm" type='video/webm' />
+				    <source src="http://video-js.zencoder.com/oceans-clip.ogv" type='video/ogg' />
+				    <track kind="captions" src="captions.vtt" srclang="en" label="English" />
+				  </video>	  
+				
+			</div>
+			
+			<div class="controls">
+		  	   <button href="#" class="btn" id="play"><i class="icon-play">Play</i></button>
+		  
+			   <button href="#" class="btn" id="stop"><i class="icon-stop">Stop</i></button>
+			  
+			   <button href="#" class="btn" id="mute"><i class="icon-volume-off">Mute</i></button>
+			   
+			   <div class="progress progress-striped">
+				  <div class="bar"></div>
+			   </div>
+		    </div>
+		</section>
+		
+		<section class="my-form">
+			
+		</section>
+		
+		</div>
+		
+	</section>
+	<script type="text/javascript">
+	
+	    var video = $('#video_1')[0],
+	    	playIcon = $('#play').find('i');
+		
+		$('#play').on('click', function() {
+			if(video.paused == true) {
+				video.play();
+				playIcon.removeClass('icon-play').addClass('icon-pause');
+				console.log('play');				
+			} else {
+				video.pause();
+				playIcon.removeClass('icon-pause').addClass('icon-play');
+				console.log('pause');
+			}
+		});
+		$('#stop').on('click', function() {
+			video.pause();
+			video.currentTime = 0;
+			
+			if ( playIcon.hasClass('icon-pause') ) {
+				playIcon.removeClass('icon-pause').addClass('icon-play');
+			};
+		});
+		$('#mute').on('click', function() {
+			if (video.volume > 0) {
+				video.volume = 0;
+			} else{
+				video.volume = 1;
+			};
+		});
+		
+		$('#video_1').on('timeupdate', function() {
+			//console.log(video.currentTime);
+			var avance = video.currentTime / video.duration * 100;
+			console.log(video.currentTime + ":::::::::" + avance);
+			$('.bar').css('width', avance + '%');
+		});
+		
+	</script>
+</body>
+</html>

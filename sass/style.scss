@@ -1,0 +1,30 @@
+/* Welcome to Compass.
+ * In this file you should write your main styles. (or centralize your imports)
+ * Import this file using the following HTML or equivalent:
+ * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
+
+//@import "compass/reset";
+//@import "_bootstrap";
+
+
+
+.controls {
+  button {
+    
+    width: 90px;
+    line-height: 25px;
+    height: 35px;
+  }
+  .btn {
+    i { text-indent: -9999px; }
+  } 
+}
+
+.progress { margin-top: 20px; }
+
+#name, #answer { height: 27px; }
+
+.form-inline { display: none; }
+
+h2 { margin-bottom: 1.4em; }
+h4 { margin-bottom: 1.3em; }
